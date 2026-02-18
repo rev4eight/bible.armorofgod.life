@@ -39,6 +39,7 @@ An offline-capable, multi-language Bible study application with AI-powered scrip
 ### Start the Application
 
 ```bash
+chmod +x start.sh
 ./start.sh
 ```
 

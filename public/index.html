@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOLY BIBLE</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HOLY BIBLE">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="apple-touch-icon" href="assets/img/favicon.png">
+    <script id="manifest" type="application/manifest+json">
+        {
+            "name": "HOLY BIBLE",
+            "short_name": "HOLY BIBLE",
+            "description": "HOLY BIBLE with DBA1 (Digital Bible Assistant 1) scripture study tool",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#2c3e50",
+            "theme_color": "#2c3e50",
+            "orientation": "portrait-primary",
+            "icons": [
+                {
+                    "src": "assets/img/favicon.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "assets/img/favicon.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ]
+        }
+    </script>
+    <script>
+        // Load inline manifest
+        (function() {
+            const manifestScript = document.getElementById('manifest');
+            if (manifestScript) {
+                const manifestContent = manifestScript.textContent;
+                const blob = new Blob([manifestContent], {type: 'application/manifest+json'});
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('link');
+                link.rel = 'manifest';
+                link.href = url;
+                document.head.appendChild(link);
+            }
+        })();
+    </script>
+    <script>
+        // Generate random version for cache busting
+        const cacheVersion = Math.random().toString(36).substring(2, 10);
+        document.write('<link rel="stylesheet" href="assets/css/styles.css?v=' + cacheVersion + '">');
+        document.write('<link rel="stylesheet" href="assets/css/light-theme.css?v=' + cacheVersion + '" id="lightTheme">');
+        document.write('<link rel="stylesheet" href="assets/css/dark-theme.css?v=' + cacheVersion + '" id="darkTheme" disabled>');
+        document.write('<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">');
+
+        // Clear all caches on initial load
+        (function clearCaches() {
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    names.forEach(function(name) {
+                        caches.delete(name);
+                    });
+                });
+            }
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    registrations.forEach(function(registration) {
+                        registration.unregister();
+                    });
+                });
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="resize-handle"></div>
+            <div class="sidebar-header">
+                <h2 id="bibleHeader">HOLY BIBLE</h2>
+            </div>
+            <div class="book-list" id="bookList">
+                <!-- Books populated by JS -->
+            </div>
+            <div class="sidebar-footer">
+                <div class="sidebar-controls">
+                    <button id="toggleTheme" title="Toggle Theme">☀️</button>
+                    <a href="https://github.com/rev4eight/bible.armorofgod.life" target="_blank" rel="noopener" title="GitHub">🐙</a>
+                    <button id="toggleAI" title="Toggle AI Chat">🤖</button>
+                    <button id="splitView" title="Create Parallel View">➕</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+         <main class="main-content">
+               <div class="chapter-header">
+
+                     <h1 id="chapterTitle"><span class="menu-toggle-icon" id="chapterMenuToggle" title="Toggle menu">📖</span> Genesis 1</h1>
+<div class="chapter-nav">
+                       <select id="bibleVersion" class="bible-version-select">
+                           <!-- Options will be populated dynamically -->
+                       </select>
+                       <button id="prevChapter">◀&nbsp; Prev</button>
+                       <button id="nextChapter">Next &nbsp;▶</button>
+                   </div>
+            </div>
+            <div class="verses-container" id="versesContainer">
+                <!-- Verses populated by JS -->
+            </div>
+            
+<!-- Bottom Navigation -->
+            <nav class="bottom-nav single-panel">
+                <button id="bottomPrevChapter" class="bottom-nav-btn prev-btn">◀</button>
+                <button id="bottomNextChapter" class="bottom-nav-btn next-btn">▶</button>
+            </nav>
+        </main>
+
+        <!-- Chatbox Panel -->
+        <aside class="chatbox-panel" id="chatboxPanel">
+            <div class="resize-handle"></div>
+            <div class="chatbox-header">
+                 <div class="chatbox-header-left">
+                     <button class="close-btn" id="closeChatbox" title="Close chat">✕</button>
+                     <h3><span id="botName">DBA1 </span></h3>
+                     <button id="aiProviderToggle" class="ai-toggle" title="Toggle AI Provider">☁️</button>
+                     <select id="modelSelect" class="model-select">
+                        <option value="">Loading...</option>
+                    </select>
+                    <button class="model-refresh" id="modelRefresh" title="Refresh model list">↻</button>
+                    <button class="settings-btn" id="settingsBtn" title="Settings">⚙️</button>
+                 </div>
+              </div>
+              <div class="chatbox-settings" id="chatboxSettings">
+                  <div class="settings-row settings-input-row">
+                        <label for="cloudUrl">API URL:</label>
+                        <div class="input-with-icon">
+                            <input type="text" id="cloudUrl" placeholder="https://your-api-url.ai" value="">
+                            <span id="cloudUrlValid" class="input-valid-icon"></span>
+                        </div>
+                    </div>
+                  <div class="settings-row settings-input-row">
+                        <label for="aiPassword">API Password:</label>
+                        <div class="input-with-icon">
+                            <input type="password" id="aiPassword" placeholder="Enter password for AI access" value="">
+                            <span id="aiPasswordValid" class="input-valid-icon"></span>
+                        </div>
+                    </div>
+                  <div class="settings-row">
+                        <label for="ollamaUrl">Ollama URL:</label>
+                        <div class="input-with-icon">
+                            <input type="text" id="ollamaUrl" placeholder="http://localhost:11434" value="">
+                            <span id="ollamaUrlValid" class="input-valid-icon"></span>
+                        </div>
+                    </div>
+                 <div class="settings-row">
+                     <label for="temperature">Temperature:</label>
+                     <input type="number" id="temperature" min="0" max="2" step="0.1" value="0.2">
+                 </div>
+                  <div class="settings-row">
+                      <label for="topP">Top P:</label>
+                      <input type="number" id="topP" min="0" max="1" step="0.1" value="0.9">
+                  </div>
+                  <div class="settings-row">
+                      <label for="topK">Top K:</label>
+                      <input type="number" id="topK" min="1" max="100" step="1" value="40">
+                  </div>
+                  <div class="settings-row">
+                      <label for="maxTokens">Max Tokens:</label>
+                      <input type="number" id="maxTokens" min="100" max="10000" step="100" value="1000">
+                  </div>
+                  <div class="settings-row">
+                      <label for="customPrompt">Custom Prompt:</label>
+                      <textarea id="customPrompt" placeholder="Leave empty to use default prompt"></textarea>
+                  </div>
+                  <div class="settings-help-row">
+                      <button id="settingsHelpBtn" class="settings-help-btn" title="AI Settings Help">?</button>
+                      <div id="settingsHelpMenu" class="settings-help-menu">
+                          <strong>AI Settings Guide</strong><br><br>
+                          <strong>Temperature</strong> (0-2): Lower (0.1-0.3) for precise scripture analysis; higher (0.7-1.0) for creative insights.<br><br>
+                          <strong>Top P</strong> (0-1): Lower values restrict word choices for more focused answers; higher allows more variety.<br><br>
+                          <strong>Top K</strong> (1-100): Limits AI to top K word choices. Lower = more deterministic responses.<br><br>
+                          <strong>Max Tokens</strong>: Maximum response length. 1000 ≈ ~750 words.<br><br>
+                          <strong>Custom Prompt</strong>: Override the default system prompt with your own instructions.
+                      </div>
+                  </div>
+                   
+                   
+                </div>
+              <div class="chatbox-messages" id="chatboxMessages">
+                  <div class="message ai-message">
+                      <div class="message-content">
+                          <div class="message-avatar">🤖</div>
+                          <p>Select a chapter and ask about the text.</p>
+                      </div>
+                  </div>
+              </div>
+            <div class="chatbox-input-area">
+                <div class="input-wrapper">
+                    <button id="clearChat" class="input-left-btn trash-btn" title="Clear Chat">🗑️</button>
+
+                    <input type="text" id="chatInput" placeholder="Ask about this chapter..." autocomplete="off">
+                    <button id="sendMessage" class="send-btn">➤</button>
+                </div>
+            </div>
+        </aside>
+        </main>
+
+
+    </div>
+    </div>
+
+    <script src="assets/js/bibleLoader.js"></script>
+    <script type="module" src="assets/js/versionDropdown.js"></script>
+    <script type="module" src="assets/js/state-ui-utils.js"></script>
+    <script type="module" src="assets/js/chat.js"></script>
+    <script type="module" src="assets/js/highlighting.js"></script>
+    <script type="module" src="assets/js/navigation.js"></script>
+    <script type="module" src="assets/js/models.js"></script>
+    <script type="module" src="assets/js/splitView.js"></script>
+    <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

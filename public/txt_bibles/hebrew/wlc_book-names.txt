@@ -1,0 +1,39 @@
+01 Genesis בראשית
+02 Exodus שמות
+03 Leviticus ויקרא
+04 Numbers במדבר
+05 Deuteronomy דברים
+06 Joshua יהושע
+07 Judges שופטים
+08 Ruth רות
+09 1 Samuel שמואל א
+10 2 Samuel שמואל ב
+11 1 Kings מלכים א
+12 2 Kings מלכים ב
+13 1 Chronicles דברי הימים א
+14 2 Chronicles דברי הימים ב
+15 Ezra עזרא
+16 Nehemiah נחמיה
+17 Esther אסתר
+18 Job איוב
+19 Psalms תהילים
+20 Proverbs משלי
+21 Ecclesiastes קהלת
+22 Song of Solomon שיר השירים
+23 Isaiah ישעה
+24 Jeremiah ירמיה
+25 Lamentations איכה
+26 Ezekiel יחזקאל
+27 Daniel דניאל
+28 Hosea הושע
+29 Joel יואל
+30 Amos עמוס
+31 Obadiah עבדיה
+32 Jonah יונה
+33 Micah מיכה
+34 Nahum נחום
+35 Habakkuk חבקוק
+36 Zephaniah צפניה
+37 Haggai חגי
+38 Zechariah זכריה
+39 Malachi מלאכי

@@ -1,0 +1,2150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+body.resizing,
+body.resizing * {
+    cursor: col-resize !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.book-item,
+.chapter-item,
+.verse {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+.chatbox-messages .message-content p {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* CSS Variables are now in separate theme files */
+
+/* Theme-specific styles are now handled in separate theme files */
+
+/* Common Resize Handle Base Styles */
+.resize-handle,
+.split-resize-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: col-resize;
+    background: transparent;
+    transition: background-color 0.2s;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.resize-handle::before,
+.split-resize-handle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 40px;
+    background-color: transparent;
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.resize-handle:hover::before,
+.split-resize-handle:hover::before {
+    border-left-color: var(--primary-color);
+    border-right-color: var(--primary-color);
+}
+
+.resize-handle:hover,
+.split-resize-handle:hover {
+    background-color: var(--primary-color);
+    opacity: 0.265;
+}
+
+/* Only show active state on the specific panel being resized or its handle */
+.sidebar.resizing .resize-handle,
+.chatbox-panel.resizing .resize-handle,
+.split-container.resizing .split-resize-handle {
+    background-color: var(--primary-color);
+    opacity: 0.265;
+}
+
+/* Handle direct hover state when body is resizing */
+body.resizing .resize-handle:hover,
+body.resizing .split-resize-handle:hover {
+    background-color: var(--primary-color);
+    opacity: 0.265;
+}
+
+/* Active resize handle (the one being dragged) */
+.resize-handle.active-resize,
+.split-resize-handle.active-resize {
+    background-color: var(--primary-color);
+    opacity: 0.265;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 210px;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.chatbox-panel.open ~ .sidebar {
+    width: 210px;
+}
+
+/* When AI panel is open, constrain sidebar to max size */
+.chatbox-panel.open ~ .sidebar {
+    width: 200px;
+}
+
+/* Sidebar Resize Handle - Removed */
+.sidebar .resize-handle {
+    display: none;
+}
+
+.sidebar-header {
+    padding: 20px;
+}
+
+.sidebar-header h2 {
+    padding-top: 7px;
+    font-size: 1.47rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transform: translateX(-3px);
+}
+
+.sidebar-footer {
+    padding: 20px;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    flex-shrink: 0;
+}
+
+.sidebar-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-controls button,
+.sidebar-controls #splitView,
+.sidebar-controls #toggleTheme,
+.sidebar-controls #toggleAI,
+.sidebar-controls a {
+    padding: 8px 10px;
+    background-color: var(--overlay-light) !important;
+    color: #ffffff !important;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    opacity: 0.8;
+    filter: brightness(0) invert(1);
+    -webkit-filter: brightness(0) invert(1);
+    box-sizing: border-box;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.sidebar-controls button:hover,
+.sidebar-controls #splitView:hover,
+.sidebar-controls #toggleTheme:hover,
+.sidebar-controls #toggleAI:hover,
+.sidebar-controls a:hover {
+    background-color: var(--overlay-hover) !important;
+    opacity: 1 !important;
+}
+
+#toggleAI.ai-active {
+    border-color: var(--primary-color) !important;
+}
+
+#splitView.split-active {
+    border-color: var(--primary-color) !important;
+}
+
+.book-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+.book-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 3px solid transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--book-font-size);
+}
+
+/* Smooth font sizing during active resize */
+body.resizing .book-item {
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, font-size 0.15s ease;
+}
+
+.book-item:hover {
+    background-color: var(--overlay-light);
+}
+
+.book-item.expanded {
+    background-color: var(--overlay-medium);
+}
+
+.book-item.active {
+    background-color: var(--overlay-active);
+}
+
+.book-item.current-book span {
+    font-weight: bold;
+}
+
+.book-item .expand-icon {
+    visibility: hidden;
+}
+
+.chapter-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: var(--transition-slow);
+    background-color: var(--chapter-grid-bg);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    padding: 0 8px;
+}
+
+.chapter-list.expanded {
+    max-height: 6000px;
+    overflow-y: visible;
+    padding: 12px 8px;
+}
+
+.chapter-list::-webkit-scrollbar {
+    display: none;
+}
+
+.chapter-list {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.chapter-item {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.0rem;
+    font-weight: 500;
+    transition: var(--transition);
+    color: var(--sidebar-text);
+    background-color: var(--overlay-light);
+    border-radius: 4px;
+    opacity: 0.8;
+}
+
+.chapter-item:hover {
+    background-color: var(--overlay-hover);
+    color: var(--select-text);
+    opacity: 1;
+}
+
+.chapter-item.active {
+    background-color: var(--overlay-selected);
+    color: var(--select-text);
+    font-weight: 700;
+    opacity: 1;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: auto;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18.5px 20px;
+    background-color: var(--chatbox-bg);
+    margin: 0 auto;
+    flex-shrink: 0;
+    min-height: fit-content;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Bottom nav full width in split view */
+.main-content:has(.split-container) .bottom-nav {
+    max-width: none;
+    margin: 0;
+}
+
+/* Main content layout for single panel mode */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.main-content > :not(.split-container) {
+    width: 100%;
+}
+
+.bottom-nav-btn {
+    padding: 10px 20px;
+    background-color: var(--overlay-light) !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    opacity: 0.8;
+    filter: brightness(0) invert(1);
+    -webkit-filter: brightness(0) invert(1);
+}
+
+.bottom-nav-btn:hover {
+    background-color: var(--overlay-hover) !important;
+    opacity: 1 !important;
+}
+
+.bottom-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Hide bottom navigation on mobile */
+@media (max-width: 768px) {
+    /* Remove main content width constraint on mobile */
+    .sidebar:not(.mobile-visible) + .main-content {
+        max-width: none;
+    }
+    
+    /* Hide only Prev/Next buttons in header on mobile, keep chapter-nav container and version dropdown */
+    .chapter-nav button:not(.split-close-btn) {
+        display: none !important;
+    }
+    
+    /* Also hide Prev/Next buttons in split-container on mobile */
+    .split-container .chapter-nav button:not(.split-close-btn) {
+        display: none !important;
+    }
+    
+    /* Mobile layout: title on left, version dropdown on right */
+    .chapter-header {
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: nowrap;
+        padding: 20px 12px;
+    }
+    
+    /* Ensure book title stays centered with proper padding */
+    .chapter-header h1 {
+        flex: none !important;
+        text-align: left !important;
+        padding: 0 !important;
+        margin-right: auto !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1.2;
+        margin: 0 10px 0 0 !important;
+        cursor: pointer;
+    }
+    
+    /* Keep version dropdown positioned on right - make wider to fit close button */
+    .chapter-nav {
+        justify-content: flex-end;
+        flex-shrink: 0;
+        margin-left: auto;
+        margin-right: 4px;
+        width: 110px;
+    }
+    
+    .bible-version-select {
+        display: block !important;
+        width: 65px;
+        font-size: 0.65rem;
+        padding: 4px 6px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    
+    /* Mobile split-close-btn styling */
+    .split-close-btn {
+        padding: 6px 6px;
+        font-size: 0.8rem;
+        display: flex !important;
+        flex-shrink: 0;
+        min-width: 26px;
+        box-sizing: border-box;
+        border-radius: 0;
+    }
+    
+    /* Mobile chapter-nav gap adjustment */
+    .chapter-nav {
+        gap: 6px;
+    }
+}
+
+ /* When sidebar is visible, constrain main content */
+.sidebar:not(.mobile-visible) + .main-content {
+    max-width: calc(100vw - var(--current-sidebar-width, 250px)); /* Account for sidebar width */
+}
+
+/* When sidebar AND AI panel are both open, let flex handle it naturally */
+.sidebar:not(.mobile-visible) + .main-content:has(~ .chatbox-panel.open) {
+    max-width: none;
+}
+
+/* When AI panel is open with sidebar, main content naturally adjusts due to flex layout */
+
+/* When AI panel is open without sidebar, constrain for AI panel only */
+.sidebar.mobile-visible + .main-content .chatbox-panel.open ~ * {
+    max-width: none;
+}
+
+/* Split View Container */
+.split-container {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Better split container sizing */
+.main-content .split-container {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    min-height: 0; /* Allow flex shrinking */
+}
+
+/* Bottom navigation positioning in split view */
+.main-content:has(.split-container) .bottom-nav {
+    position: relative;
+    width: 100%;
+    margin-top: 0;
+    order: 2;
+}
+
+/* Split container should grow to fill available space, leaving room for bottom nav */
+.main-content:has(.split-container) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.main-content:has(.split-container) .split-container {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Hide bottom nav inside panels when in split view (desktop only) */
+@media (min-width: 769px) {
+    .split-container .bottom-nav {
+        display: none !important;
+    }
+}
+
+/* Split Panel Resize Handle */
+.split-resize-handle {
+    left: 0; /* Will be set by JavaScript */
+    transform: translateX(-50%);
+}
+
+.split-container:not(.resizing) .split-resize-handle {
+    transition: left 0.2s ease-out, transform 0.2s ease-out, background-color 0.2s;
+}
+
+
+
+/* Panel resize styles */
+.split-container.resizing,
+.split-container.resizing * {
+    cursor: col-resize !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+/* Content Panel */
+.content-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    position: relative;
+    height: 100%;
+}
+
+.content-panel.split {
+    width: 50%;
+    border-right: none;
+    flex: none;
+}
+
+.content-panel.split:last-child {
+    border-right: none;
+}
+
+/* Ensure verses container can scroll in split panels */
+.content-panel.split .verses-container {
+    flex: 1;
+    overflow-y: auto;
+    max-width: none;
+    margin: 0;
+    padding: 20px;
+    height: calc(100% - 80px);
+}
+
+/* Split View Button */
+#splitView {
+    padding: 8px 16px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+#splitView:hover {
+    background-color: var(--button-hover);
+}
+
+/* Hide split button when already in split view */
+.split-container .chapter-nav #splitView {
+    display: none;
+}
+
+/* Hide prev/next buttons in top navigation when in split view */
+.split-container .chapter-nav #prevChapter,
+.split-container .chapter-nav #nextChapter {
+    display: none !important;
+}
+
+.split-close-btn {
+    padding: 8px 8px;
+    background-color: var(--overlay-light);
+    color: #ffffff;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: var(--transition);
+    filter: brightness(0) invert(1);
+    -webkit-filter: brightness(0) invert(1);
+    min-width: 32px;
+    box-sizing: border-box;
+}
+
+.split-close-btn:hover {
+    background-color: var(--overlay-hover);
+    opacity: 1;
+}
+
+.split-close-btn:active {
+    transform: scale(0.95);
+}
+
+/* Hide close button on original panel (first panel) */
+.split-container .content-panel:first-child .split-close-btn {
+    display: none;
+}
+
+/* Hide split view button in duplicate panel */
+.split-container .content-panel:last-child #splitView {
+    display: none;
+}
+
+/* Ensure split container is positioned for absolute child */
+.split-container {
+    position: relative;
+}
+
+.chapter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px 10px 30px;
+    background-color: var(--chatbox-bg);
+    flex-wrap: nowrap;
+    min-height: 60px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Allow header to be full width in split view */
+.split-container .chapter-header {
+    max-width: none;
+    margin: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Chapter nav in split view */
+.split-container .chapter-nav {
+    margin-left: auto;
+}
+
+.chapter-header h1 {
+    flex: 1;
+        text-align: left;
+    padding: 0;
+    min-width: 0;
+    line-height: 1.2;
+    margin: 0;
+    overflow: visible;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* Menu toggle icon - hidden by default on desktop */
+.menu-toggle-icon {
+    display: none;
+    margin-right: 8px;
+    width: 22px;
+    height: 22px;
+    font-size: 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    vertical-align: middle;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Emoji color fix: convert yellow emoji to dark color for light theme */
+    filter: brightness(0) saturate(100%) invert(29%) sepia(10%) saturate(1600%) hue-rotate(185deg) brightness(95%) contrast(90%);
+}
+
+.menu-toggle-icon:hover {
+    opacity: 1;
+}
+
+.menu-toggle-icon:active {
+    opacity: 0.7;
+}
+
+.chapter-header h1 {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.chapter-header h1:hover {
+    opacity: 0.9;
+}
+
+/* Hide on desktop */
+@media (min-width: 769px) {
+    .menu-toggle-icon {
+        display: none !important;
+    }
+}
+
+/* Show on mobile */
+@media (max-width: 768px) {
+    .chapter-header .menu-toggle-icon {
+        display: flex !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .chapter-header {
+        padding-left: 20px;
+        justify-content: flex-start;
+    }
+    
+    .chapter-header h1 {
+        flex: 1;
+        text-align: left;
+        padding: 0;
+        margin: 0;
+        overflow: visible;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+    
+    .chapter-nav {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+}
+
+.chapter-header > * {
+    flex-shrink: 0;
+}
+
+.book-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    opacity: 0.7;
+    z-index: 1;
+}
+
+.cross-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    z-index: 2;
+    color: var(--text-color);
+    text-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+
+#toggleMenu:hover {
+    color: var(--link-color);
+}
+
+@media (max-width: 768px) {
+    #toggleMenu {
+        display: block;
+    }
+
+    .sidebar.mobile-visible + .main-content #toggleMenu {
+        display: none;
+    }
+    
+    /* Add bottom padding to main content in all mobile scenarios */
+    .main-content {
+        padding-bottom: 70px; /* Account for fixed bottom nav */
+        min-height: calc(100dvh - 70px); /* Use dynamic viewport height */
+        min-height: calc(100svh - 70px);
+    }
+    
+    .sidebar.mobile-visible + .main-content {
+        padding-bottom: 70px; /* Account for fixed bottom nav */
+    }
+}
+
+.chapter-header h1 {
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+
+.chapter-nav {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    margin-left: 20px;
+}
+
+.chapter-nav button {
+    padding: 8px 16px;
+    background-color: var(--overlay-light) !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.15s, background-color 0.15s, transform 0.1s;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    filter: brightness(0) invert(1);
+    -webkit-filter: brightness(0) invert(1);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.chapter-nav button:hover {
+    background-color: var(--overlay-hover) !important;
+    opacity: 1 !important;
+}
+
+.chapter-nav button:active,
+.chapter-nav button.touch-active {
+    opacity: 0.8 !important;
+    background-color: var(--overlay-light) !important;
+    transform: scale(0.98);
+}
+
+.chapter-nav button:focus {
+    outline: none;
+}
+
+.verses-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+}
+
+.verse {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background-color: var(--verse-bg);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.verse:hover {
+    /* transform: translateX(5px); */
+}
+
+.verse-ref {
+    font-weight: 600;
+    color: var(--subtitle-color);
+    margin-right: 10px;
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+.verse-text {
+    flex: 1;
+    line-height: 1.6;
+    font-size: 1rem;
+    cursor: text;
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+.verse {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+.verse-text {
+    flex: 1;
+    line-height: 1.6;
+    font-size: 1rem;
+    cursor: text;
+    user-select: text;
+}
+
+/* Hebrew text alignment */
+.verse.hebrew .verse-text {
+    text-align: right;
+    direction: rtl;
+}
+
+.verse.hebrew .verse-ref {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+.verse.hebrew {
+    direction: rtl;
+}
+
+/* Greek text alignment (normal left-to-right) */
+.verse.greek .verse-text {
+    text-align: left;
+    direction: ltr;
+}
+
+.verse.greek .verse-ref {
+    margin-right: 10px;
+    margin-left: 0;
+}
+
+.highlight {
+    background-color: var(--highlight-bg);
+    color: var(--highlight-text);
+    border-radius: 2px;
+    cursor: pointer;
+    display: inline;
+    vertical-align: inherit; /* Match parent's vertical alignment */
+    line-height: inherit; /* Use parent's line-height exactly */
+    font-size: 100%; /* Ensure exact font size match */
+    font-family: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    font-variant: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box; /* Prevent box model issues */
+    flex: none;
+    min-width: 0;
+    max-width: 100%;
+    position: static;
+    z-index: auto;
+    height: auto;
+    width: auto;
+    /* Ensure text properties match exactly */
+    white-space: inherit;
+    text-indent: inherit;
+    text-align: inherit;
+    text-decoration: inherit;
+    text-transform: inherit;
+    text-shadow: inherit;
+    /* Prevent layout interference */
+    float: none;
+    clear: none;
+    vertical-align: baseline;
+    /* Ensure proper line breaking */
+    overflow-wrap: inherit;
+    word-wrap: inherit;
+    word-break: inherit;
+    hyphens: inherit;
+}
+
+/* Preserve original text color in highlighted elements */
+.highlight .verse-ref {
+    color: var(--subtitle-color);
+}
+
+.context-menu {
+    position: fixed;
+    background-color: var(--context-bg);
+    border: 1px solid var(--context-border);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    display: none;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    min-width: 120px;
+}
+
+/* Theme-specific context menu styles are in theme files */
+
+.context-menu-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    border-bottom: 1px solid var(--context-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Theme-specific context menu item styles are in theme files */
+
+.context-menu-item:last-child {
+    border-bottom: none;
+}
+
+.context-menu-item:hover {
+    background-color: var(--context-hover);
+}
+
+/* Theme-specific context menu hover styles are in theme files */
+
+.context-menu-item.disabled {
+    color: var(--context-disabled);
+    cursor: not-allowed;
+}
+
+/* Theme-specific context menu disabled styles are in theme files */
+
+.context-menu-item.disabled:hover {
+    background-color: transparent;
+}
+
+.color-menu-item {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    margin: 4px;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.color-menu-item[data-color="#FFFFFF"] {
+    border: 2px solid var(--context-border);
+}
+
+.color-menu-item:hover {
+    border-color: var(--context-disabled);
+    transform: scale(1.1);
+}
+
+.context-menu-icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.chapter-title {
+    font-weight: 600;
+    color: var(--title-color);
+    font-size: 1.3rem;
+    padding: 20px 20px 15px;
+    margin-bottom: 5px;
+    text-align: center;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.verse-title {
+    font-weight: 600;
+    color: var(--title-color);
+    font-size: 1.1rem;
+    padding: 15px 20px 5px;
+    margin-bottom: 8px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-style: italic;
+    color: var(--title-color);
+    padding: 15px;
+    margin: 10px 0;
+    background-color: var(--overlay-focus);
+    border-radius: 8px;
+}
+
+/* Chatbox Panel */
+.chatbox-panel {
+    width: 0;
+    background-color: var(--chatbox-bg);
+    display: flex;
+    flex-direction: column;
+    border: none;
+    position: relative;
+    transition: none;
+    overflow: hidden;
+    min-width: 0;
+    max-width: 80%;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+
+.chatbox-panel.open {
+    width: calc((100vw - var(--current-sidebar-width, 250px)) * 0.5);
+    min-width: 0;
+    flex-shrink: 0;
+    flex-basis: auto;
+}
+
+/* Hide prev/next buttons when AI chat is open */
+body.chat-open .chapter-nav #prevChapter,
+body.chat-open .chapter-nav #nextChapter {
+    display: none !important;
+}
+
+/* Chatbox Panel Resize Handle - Match split view style */
+.chatbox-panel .resize-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: col-resize;
+    background: transparent;
+    transition: background-color 0.2s;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.chatbox-panel .resize-handle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 40px;
+    background-color: transparent;
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.chatbox-panel .resize-handle:hover::before {
+    border-left-color: var(--primary-color);
+    border-right-color: var(--primary-color);
+}
+
+.chatbox-panel .resize-handle:hover {
+    background-color: var(--primary-color);
+    opacity: 0.265;
+}
+
+.chatbox-panel.resizing .resize-handle {
+    background-color: var(--primary-color);
+    opacity: 0.265;
+}
+
+body.resizing .chatbox-panel .resize-handle:hover {
+    background-color: var(--primary-color);
+    opacity: 0.265;
+}
+
+.chatbox-panel .resize-handle.active-resize {
+    background-color: var(--primary-color);
+    opacity: 0.265;
+}
+
+.chatbox-panel.collapsed,
+.chatbox-panel:not(.open) {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    flex-basis: 0 !important;
+    flex-shrink: 1 !important;
+    overflow: hidden;
+    border: none;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+}
+
+.chatbox-panel.open .resize-handle {
+    display: flex !important;
+}
+
+.chatbox-panel.collapsed .resize-handle,
+.chatbox-panel:not(.open) .resize-handle {
+    display: none !important;
+}
+
+.chatbox-panel.collapsed .chatbox-header,
+.chatbox-panel.collapsed .chatbox-messages,
+.chatbox-panel.collapsed .chatbox-input-area,
+.chatbox-panel:not(.open) .chatbox-header,
+.chatbox-panel:not(.open) .chatbox-messages,
+.chatbox-panel:not(.open) .chatbox-input-area {
+    display: none;
+}
+
+.chatbox-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+.chatbox-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chatbox-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.model-select {
+    padding: 4px 8px;
+    border-radius: 0;
+    border: none;
+    background-color: var(--select-bg);
+    color: var(--select-text);
+    font-size: 0.75rem;
+    cursor: pointer;
+    max-width: 140px;
+}
+
+.model-select:hover {
+    background-color: var(--select-hover);
+}
+
+.model-select option {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    font-size: 0.8rem;
+}
+
+.bible-version-select {
+    padding: 8px 16px;
+    background-color: var(--overlay-light) !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    outline: none;
+    opacity: 0.8;
+    max-width: 150px;
+    min-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Ensure version dropdown is visible in split view panels */
+.content-panel.split .bible-version-select {
+    max-width: 150px;
+    min-width: 100px;
+}
+
+.bible-version-select:hover {
+    background-color: var(--overlay-hover) !important;
+    opacity: 1 !important;
+}
+
+.bible-version-select option {
+    background-color: transparent;
+    color: #000000;
+}
+
+.model-refresh {
+    background: none;
+    border: none;
+    color: var(--button-text);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 4px;
+    opacity: 0.7;
+    transition: var(--transition-fast);
+    border-radius: 0;
+}
+
+.model-refresh:hover {
+    opacity: 1;
+}
+
+.ai-toggle {
+    background: none;
+    border: none;
+    color: var(--button-text);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 6px;
+    border-radius: 0;
+    opacity: 0.7;
+    transition: var(--transition-fast);
+}
+
+.ai-toggle:hover {
+    opacity: 1;
+}
+
+.ai-toggle.cloud-active {
+    border: 1px solid #00ff00 !important;
+    opacity: 1;
+}
+
+.ai-toggle.cloud-error {
+    border: 1px solid #ff0000 !important;
+    opacity: 1;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--button-text);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 0;
+    transition: var(--transition);
+    min-width: 32px;
+    box-sizing: border-box;
+}
+
+.close-btn:hover {
+    background-color: var(--overlay-light);
+    color: #ffffff !important;
+}
+
+.settings-btn {
+    background: none;
+    border: none;
+    color: var(--button-text);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 0;
+    transition: var(--transition);
+    opacity: 0.7;
+    min-width: 32px;
+    box-sizing: border-box;
+}
+
+.settings-btn:hover {
+    opacity: 1;
+    background-color: var(--overlay-light);
+}
+
+
+
+
+.chatbox-settings {
+    display: none;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--chatbox-bg);
+}
+
+.chatbox-settings.open {
+    display: block;
+}
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.settings-row label {
+    width: 120px;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.settings-row input,
+.settings-row textarea {
+    flex: 1;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--input-text);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.input-with-icon {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon input {
+    flex: 1;
+    width: 100%;
+    padding-right: 30px;
+    box-sizing: border-box;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--input-text);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.input-valid-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.input-valid-icon.show {
+    opacity: 1;
+}
+
+.input-valid-icon.valid {
+    color: #4CAF50;
+}
+
+.input-valid-icon.invalid {
+    color: #f44336;
+}
+    padding: 5px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+}
+
+.settings-row textarea {
+    width: 100%;
+    height: 80px;
+    resize: vertical;
+}
+
+.settings-help-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 8px 0;
+    position: relative;
+}
+
+.settings-help-btn {
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.settings-help-btn:hover {
+    background: #1976D2;
+}
+
+.settings-help-menu {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: var(--button-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    width: 280px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-color);
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    margin-bottom: 8px;
+}
+
+.settings-help-menu.show {
+    display: block;
+}
+
+.chatbox-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    display: block;
+    max-width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.user-message {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.message-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.ai-message .message-avatar {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    margin-top: -8px;
+}
+
+.user-message .message-avatar {
+    background-color: var(--button-bg);
+}
+
+.message-content {
+    padding: 12px 16px;
+    border-radius: 18px;
+    line-height: 1.5;
+}
+
+.ai-message .message-content {
+    background-color: var(--ai-msg-bg);
+    color: var(--ai-msg-text);
+    border-bottom-left-radius: 4px;
+}
+
+.user-message .message-content {
+    background-color: var(--user-msg-bg);
+    color: var(--user-msg-text);
+    border-bottom-right-radius: 4px;
+}
+
+.message-content p {
+    margin: 0;
+}
+
+.message-content a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: flex;
+    gap: 5px;
+    padding: 12px 16px;
+    background-color: var(--ai-msg-bg);
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    width: fit-content;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background-color: var(--user-msg-bg);
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-8px);
+    }
+}
+
+/* Chat Input Area */
+.chatbox-input-area {
+    padding: 15px 20px;
+    border: none;
+    background-color: var(--chatbox-bg);
+}
+
+.input-wrapper {
+    position: relative;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--input-border);
+    border-radius: 25px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+#chatInput:focus {
+    border-color: var(--focus-border);
+    box-shadow: 0 0 0 3px var(--overlay-focus);
+}
+
+.send-btn {
+    width: 45px;
+    height: 45px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.send-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+.send-btn.processing {
+    background-color: var(--error-color);
+    animation: pulse 1s infinite;
+    font-size: 0.9rem;
+}
+
+/* Left-side input buttons */
+.input-left-btn {
+    width: 40px;
+    height: 40px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.input-left-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+.voice-btn.recording {
+    background-color: var(--error-color);
+    color: var(--button-text);
+    border-color: var(--error-color);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Chatbox Toggle Button */
+.chatbox-toggle {
+    position: absolute;
+    left: -45px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    background-color: var(--button-bg);
+    border-radius: 8px 0 0 8px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--button-text);
+    font-size: 1.3rem;
+    transition: var(--transition);
+}
+
+.chatbox-toggle:hover {
+    background-color: var(--button-hover);
+}
+
+/* Error Message */
+.error-message {
+    background-color: var(--overlay-light);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* Scrollbar Styling */
+.chatbox-messages::-webkit-scrollbar,
+.verses-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chatbox-messages::-webkit-scrollbar-track,
+.verses-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chatbox-messages::-webkit-scrollbar-thumb,
+.verses-container::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+
+.book-list::-webkit-scrollbar {
+    width: 0px;
+}
+
+.book-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.book-list::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+
+/* Firefox scrollbar support - completely hidden */
+.book-list {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar:not(.mobile-visible) {
+        display: none;
+    }
+
+    /* Make main content fill full width when sidebar is hidden */
+    .sidebar:not(.mobile-visible) + .main-content {
+        width: 100%;
+        max-width: none;
+        flex: 1;
+        padding-bottom: 70px; /* Account for fixed bottom nav */
+    }
+
+    .chatbox-panel {
+        position: fixed !important;
+        right: 0 !important;
+        top: 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        height: 100svh !important;
+        width: 100vw !important;
+        max-width: none !important;
+        transform: translateX(100%);
+        z-index: 1002 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Hide resize handles in mobile */
+    .resize-handle {
+        display: none !important;
+    }
+
+    .chatbox-panel .resize-handle {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    .chatbox-panel.open {
+        transform: translateX(0);
+    }
+    
+    /* Ensure chatbox layout works properly on mobile */
+    .chatbox-panel .chatbox-header {
+        flex-shrink: 0;
+    }
+    
+    .chatbox-panel .chatbox-settings {
+        flex-shrink: 0;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .chatbox-panel .chatbox-messages {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+        padding: 15px;
+        padding-bottom: 100px;
+        box-sizing: border-box;
+    }
+    
+    .chatbox-panel .chatbox-input-area {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 10px !important;
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+        border-top: 1px solid var(--border-color) !important;
+        background-color: var(--chatbox-bg) !important;
+        z-index: 1001 !important;
+        box-sizing: border-box !important;
+        transform: none !important;
+    }
+    
+    .chatbox-panel .input-wrapper {
+        gap: 5px;
+        margin-bottom: 0;
+    }
+    
+    .chatbox-panel #chatInput {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .chatbox-panel .send-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .chatbox-panel .input-left-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    /* Ensure verses container accounts for fixed bottom nav on mobile */
+    .verses-container {
+        padding-bottom: 80px; /* Extra padding to ensure verses aren't hidden behind bottom nav */
+    }
+    
+    /* Ensure main content has bottom padding to account for fixed bottom nav */
+    .main-content {
+        padding-bottom: 70px; /* Account for fixed bottom nav height */
+        min-height: calc(100svh - 70px);
+    }
+}
+
+.chatbox-panel.open {
+    transform: translateX(0);
+}
+
+/* Mobile-specific visibility */
+@media (max-width: 768px) {
+    /* Make sidebar footer controls visible on mobile */
+    .sidebar {
+        display: flex !important;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 210px;
+        height: 100dvh;
+        height: 100svh;
+        z-index: 1001;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        flex-direction: column;
+    }
+    
+    .sidebar.mobile-visible {
+        transform: translateX(0);
+    }
+    
+    /* Ensure sidebar controls are visible and accessible */
+    .sidebar-footer {
+        padding: 20px;
+        background-color: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        flex-shrink: 0;
+    }
+    
+    /* Ensure book list fills available space and doesn't overlap with fixed footer */
+    .book-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 0 60px 0;
+    }
+    
+    .sidebar-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .sidebar-controls button,
+    .sidebar-controls a {
+        padding: 8px 10px;
+        background-color: var(--overlay-light) !important;
+        color: #ffffff !important;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.9rem;
+        opacity: 0.8;
+        filter: brightness(0) invert(1);
+        -webkit-filter: brightness(0) invert(1);
+        width: auto;
+        height: auto;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .sidebar-controls button:hover,
+    .sidebar-controls a:hover {
+        background-color: var(--overlay-hover) !important;
+        opacity: 1 !important;
+        transform: none;
+    }
+
+    /* Remove individual button colors on mobile */
+    #toggleTheme,
+    #toggleAI,
+    #splitView {
+        background-color: var(--overlay-light) !important;
+    }
+    
+    /* Ensure bottom navigation is always visible and fixed on mobile */
+    .bottom-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        background: var(--chatbox-bg);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1002;
+        box-shadow: none;
+        /* Ensure it's always at the bottom of the viewport */
+        transform: translateZ(0);
+        will-change: transform;
+        /* Account for browser chrome on mobile */
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* When sidebar is open, constrain bottom nav to main content area */
+    .sidebar.mobile-visible ~ .main-content .bottom-nav {
+        left: 280px;
+    }
+
+    /* Hide bottom nav when sidebar menu is open on mobile */
+    .sidebar.mobile-visible ~ .main-content .bottom-nav {
+        display: none !important;
+    }
+
+    /* Hide bottom nav when AI chat panel is open */
+    body.chat-open .bottom-nav {
+        display: none !important;
+    }
+
+    /* Raise the last book (Revelation) by 30px */
+    .book-list .book-item:last-of-type {
+        margin-bottom: 30px;
+    }
+    
+    .bottom-nav-btn {
+        padding: 10px 20px;
+        border-radius: 4px;
+        border: none;
+        background: var(--bg-color);
+        color: var(--text-color);
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+        tap-highlight-color: transparent;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    
+    /* Force reset after tap on mobile - prevent hover state from sticking */
+    @media (hover: none) and (pointer: coarse) {
+        .bottom-nav-btn {
+            background: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--border-color) !important;
+            filter: none !important;
+            -webkit-filter: none !important;
+            box-shadow: none !important;
+            transform: none !important;
+            text-shadow: none !important;
+        }
+        
+        .bottom-nav-btn:hover,
+        .bottom-nav-btn:active,
+        .bottom-nav-btn:focus,
+        .bottom-nav-btn:visited,
+        .bottom-nav-btn.touch-active {
+            background: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            transform: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            border-color: var(--border-color) !important;
+        }
+    }
+    
+    @media (hover: hover) {
+        .bottom-nav-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+    }
+    
+    /* Better mobile split handling */
+    .split-container {
+        flex-direction: column;
+        height: calc(100vh - 140px); /* Account for headers */
+    }
+    
+    .content-panel.split {
+        width: 100% !important;
+        min-height: 0;
+        overflow: hidden;
+    }
+    
+    /* Top panel 60%, bottom panel 40% */
+    .split-container .content-panel:first-child {
+        flex: 0 0 60% !important;
+    }
+    
+    .split-container .content-panel:last-child {
+        flex: 0 0 40% !important;
+    }
+    
+    .split-resize-handle {
+        display: none; /* Hide on mobile */
+    }
+    
+    /* Fix split view conflicts on mobile */
+    .split-container .bottom-nav {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 100 !important;
+    }
+    
+    /* Ensure split panels account for fixed bottom nav on mobile */
+    .split-container {
+        padding-bottom: 70px;
+    }
+    
+    .content-panel.split .verses-container {
+        padding-bottom: 90px; /* Extra padding for split view */
+    }
+    
+    /* Mobile split view - ensure close button stays visible */
+    .split-container .split-close-btn {
+        display: flex !important;
+    }
+}
+
+/* Ensure flex layout works properly on desktop */
+@media (min-width: 769px) {
+    /* Let flexbox handle natural sizing - no manual width constraints needed */
+}

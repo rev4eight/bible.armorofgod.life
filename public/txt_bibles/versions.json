@@ -1,0 +1,28 @@
+{
+  "languages": {
+    "Hebrew": {
+      "wlc": "WLC - Westminster Leningrad Codex"
+    },
+    "Greek": {
+      "na28-ubs5": "NA28-UBS5 - Greek New Testament"
+    },
+    "English": {
+      "ylt": "YLT - Young's Literal Translation"
+    }
+  },
+  "languageNames": {
+    "English": "English",
+    "Hebrew": "עברית",
+    "Greek": "Ελληνικά",
+    "Spanish": "Español",
+    "French": "Français",
+    "Japanese": "日本語",
+    "Chinese": "中文",
+    "Arabic": "العربية",
+    "Korean": "한국어",
+    "Russian": "Русский",
+    "Filipino": "Tagalog",
+    "Hindi": "हिन्दी",
+    "Ukrainian": "Українська"
+  }
+}

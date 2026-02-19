@@ -1,4 +1,4 @@
-# bible.armorofgod.life - On or Offline Bible Study App with AI Cloud Worker & Local Ollama (DBA1)
+# bible.armorofgod.life - On or Offline Bible Study App with AI Cloud Worker & Local Ollama
 
 <p align="center">
   <img src="https://img.shields.io/badge/JavaScript-ES6+-yellow" alt="JavaScript">
